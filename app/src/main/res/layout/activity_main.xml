@@ -20,7 +20,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:hint="Enter Username"
             android:id="@+id/username"
-            android:textColor="@color/main"
+            android:inputType="textPersonName"
             android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
@@ -39,8 +39,8 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:hint="Enter Email"
+            android:inputType="textEmailAddress"
             android:id="@+id/email"
-            android:textColor="@color/main"
             android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
@@ -60,7 +60,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwrd"
             android:hint="Enter Password"
-            android:textColor="@color/main"
+            android:inputType="textPassword"
             android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
