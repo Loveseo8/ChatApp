@@ -2,6 +2,7 @@ package com.aad.chatapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,6 +31,7 @@ public class MessageActivity extends AppCompatActivity {
     private ImageView imageView, imageViewSend;
     private ProgressBar progressBar;
     private ArrayList<Message> messages;
+    private MessageAdapter messageAdapter;
 
     String username, email, id;
 
@@ -50,6 +53,22 @@ public class MessageActivity extends AppCompatActivity {
         textView.setText(username);
 
         messages = new ArrayList<>();
+
+        imageViewSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                FirebaseDatabase.getInstance().getReference("messages/" + id).push().setValue(new Message(FirebaseAuth.getInstance().getCurrentUser().getEmail(), email, editText.getText().toString()));
+                editText.setText("");
+            }
+        });
+
+        messageAdapter = new MessageAdapter(messages, getIntent().getStringExtra("myImage"), getIntent().getStringExtra("image"), MessageActivity.this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(messageAdapter);
+
+
+        Glide.with(MessageActivity.this).load(getIntent().getStringExtra("image")).error(R.drawable.ic_baseline_account_circle_24).placeholder(R.drawable.ic_baseline_account_circle_24).into(imageView);
 
         setUpChat();
 
@@ -76,6 +95,8 @@ public class MessageActivity extends AppCompatActivity {
 
                 }
 
+                attachMessageListener(id);
+
             }
 
             @Override
@@ -99,6 +120,8 @@ public class MessageActivity extends AppCompatActivity {
                     messages.add(d.getValue(Message.class));
 
                 }
+
+                messageAdapter.notifyDataSetChanged();
 
                 recyclerView.scrollToPosition(messages.size() - 1);
                 recyclerView.setVisibility(View.VISIBLE);
