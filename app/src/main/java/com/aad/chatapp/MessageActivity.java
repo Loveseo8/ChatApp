@@ -81,17 +81,17 @@ public class MessageActivity extends AppCompatActivity {
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
 
                 String myName = snapshot.getValue(User.class).getUsername();
-                if(username.compareTo(myName) > 0){
+                if(email.compareTo(FirebaseAuth.getInstance().getCurrentUser().getEmail()) > 0){
 
-                    id = myName + username;
+                    id = FirebaseAuth.getInstance().getCurrentUser().getEmail() + email;
 
-                } else if (username.compareTo(myName) == 0){
+                } else if (email.compareTo(FirebaseAuth.getInstance().getCurrentUser().getEmail()) == 0){
 
-                    id = username + myName;
+                    id = email + FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
                 } else {
 
-                    id = username + myName;
+                    id = email + FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
                 }
 
