@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -30,6 +31,8 @@ public class Dialogs extends AppCompatActivity {
     private DialogsAdapter dialogsAdapter;
     DialogsAdapter.onUserClickListener onUserClickListener;
     private SwipeRefreshLayout swipeRefreshLayout;
+
+    String myImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,7 @@ public class Dialogs extends AppCompatActivity {
         onUserClickListener = new DialogsAdapter.onUserClickListener() {
             @Override
             public void onUserClicked(int position) {
+                startActivity(new Intent(Dialogs.this, MessageActivity.class).putExtra("username", users.get(position).getUsername()).putExtra("email", users.get(position).getEmail()).putExtra("image", users.get(position).getProfilePicture()).putExtra("myImage", myImage));
 
             }
         };
@@ -91,7 +95,6 @@ public class Dialogs extends AppCompatActivity {
                 for (DataSnapshot ds  : snapshot.getChildren()){
 
                     users.add(ds.getValue(User.class));
-
                 }
 
                 dialogsAdapter = new DialogsAdapter(users,Dialogs.this, onUserClickListener);
@@ -100,7 +103,19 @@ public class Dialogs extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
 
+                for(User user : users){
+
+                    if(user.getEmail().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())){
+
+                        myImage = user.getProfilePicture();
+                        return;
+
+                    }
+
+                }
+
             }
+
 
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
